@@ -17,7 +17,7 @@ def obj_to_dic(pos_obj):
     return pos_dict 
 
 #all routes
-@app.route('/year=<year>')
+@app.route('/year=<year>/storms_detail')
 def year_storm(year):
     try:
         qobj=Storm.query
@@ -30,7 +30,7 @@ def year_storm(year):
 
 
 @app.route('/storm_name=<sname>/year=<year>')
-def storms_location(sname,year):
+def storms_and_year_to_location(sname,year):
     try:
         qobj=Storm.query
         fil_qobj=qobj.filter(Storm.name == str(sname)).filter(Storm.year == int(year)).first()
@@ -39,3 +39,27 @@ def storms_location(sname,year):
         return json.dumps(li_dic)
     except Exception as err:
         return 'No info found'
+
+
+@app.route('/storm_name=<sname>')
+def storms_to_location(sname):
+    try:
+        qobj=Storm.query
+        fil_qobj=qobj.filter(Storm.name == str(sname)).first()
+        li=fil_qobj.pos
+        li_dic= [obj_to_dic(obj) for obj in li]
+        return json.dumps(li_dic)
+    except Exception as err:
+        return str(err)
+
+
+@app.route('/year=<year>/location_detail')
+def years_to_location(year):
+    try:
+        qobj=Storm.query
+        fil_qobj=qobj.filter(Storm.year == int(year)).first()
+        li=fil_qobj.pos
+        li_dic= [obj_to_dic(obj) for obj in li]
+        return json.dumps(li_dic)
+    except Exception as err:
+        return str(err)
