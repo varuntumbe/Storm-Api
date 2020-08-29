@@ -122,7 +122,7 @@
         var markers=[];
         for(let i=0;i<myData.length;i++)
         {
-
+            
             var circle = {
             path: google.maps.SymbolPath.CIRCLE,
             fillColor: 'red',
@@ -144,12 +144,14 @@
             var infowindow = new google.maps.InfoWindow({
             content: "No data available"
             });
-
-            google.maps.event.addListener(marker, 'click', function() { 
-                infowindow.setContent('this is some storm');
+            markers.push(marker)
+        }
+        for(let i=0;i<myData.length;i++)
+        {
+          google.maps.event.addListener(markers[i], 'click', function() { 
+                infowindow.setContent('name: ' + myData[i][3] + ',  year : ' + myData[i][4] +',  pressure : ' + myData[i][2]);
                 infowindow.open(map, this);
                 }); 
-            markers.push(marker)
         }
 
         }
