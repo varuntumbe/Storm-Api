@@ -1,6 +1,7 @@
 from app import app,db
 from app.models import Storm,Position
 import json
+import webbrowser
 
 #convert class-object into dictionary
 def convert_to_dic(st_obj):
@@ -10,11 +11,15 @@ def convert_to_dic(st_obj):
     return st_dic
 
 def obj_to_dic(pos_obj):
-    pos_dict=dict()
-    pos_dict['lattitude']=pos_obj.lat
-    pos_dict['longitude']=pos_obj.longi
-    pos_dict['pressure']=pos_obj.pressure
-    return pos_dict 
+    # pos_dict=dict()
+    # pos_dict['lattitude']=pos_obj.lat
+    # pos_dict['longitude']=pos_obj.longi
+    # pos_dict['pressure']=pos_obj.pressure
+    pos_list=list()
+    pos_list.append(pos_obj.lat)
+    pos_list.append(pos_obj.longi)
+    pos_list.append(pos_obj.pressure)
+    return pos_list
 
 #all routes
 @app.route('/year=<year>/storms_detail')
@@ -60,6 +65,11 @@ def years_to_location(year):
         fil_qobj=qobj.filter(Storm.year == int(year)).first()
         li=fil_qobj.pos
         li_dic= [obj_to_dic(obj) for obj in li]
+        #writing data to where.js
+        with open('./map_visualization/where.js','w') as fobj:
+            fobj.write('myData = ')
+            fobj.write(json.dumps(li_dic))
+        webbrowser.open_new_tab('file:///F:/flask-api/map_visualization/where.html')
         return json.dumps(li_dic)
     except Exception as err:
         return str(err)
